@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:LuigiApp.Product.Models"
+             xmlns:local="clr-namespace:LuigiApp.Invoice.ViewModels"
+             x:Class="LuigiApp.Invoice.Views.AddProductPage"
+             xmlns:resource="clr-namespace:LuigiApp.Resources"
+             xmlns:converter="clr-namespace:LuigiApp.Base.Views.Converters"
+             x:DataType="local:AddProductViewModel"
+             Shell.TabBarIsVisible="False"
+             Title="{Binding Title}">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding UnsubscribeCommand}"/>
+    </Shell.BackButtonBehavior>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:StringToDoubleConverter x:Key="StringToDouble"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Shell.SearchHandler>
+        <SearchHandler ShowsResults="True"
+                       Placeholder="{Static resource:Literals.SearchProduct}"
+                       Command="{Binding SearchCommand}"
+                       ItemsSource="{Binding Products}"
+                       SearchBoxVisibility="Expanded"
+                       ClearPlaceholderIcon="scan.png"
+                       ClearPlaceholderCommand="{Binding ScanCommand}"
+                       Query="{Binding Query, Mode=TwoWay}">
+            <SearchHandler.ItemTemplate>
+                <DataTemplate>
+                    <Label Padding="7"
+                           x:DataType="model:Product"
+                           Text="{Binding Description}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type local:AddProductViewModel}}, Path=SelectProductCommand}"
+                                              CommandParameter="{Binding .}"
+                                              Tapped="OnProductSelected"
+                                              NumberOfTapsRequired="1"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </DataTemplate>
+            </SearchHandler.ItemTemplate>
+        </SearchHandler>
+    </Shell.SearchHandler>
+    <StackLayout>
+        <Entry Placeholder="{Static resource:Literals.QuantityOrPeso}"
+               Text="{Binding Quantity, Mode=TwoWay, Converter={StaticResource StringToDouble}}"
+               TextChanged="ValidateInt"
+               Keyboard="Numeric"/>
+        <Frame BorderColor="Black" CornerRadius="5">
+            <Frame.Triggers>
+                <DataTrigger TargetType="Frame" Binding="{Binding Price}" Value="0">
+                    <Setter Property="IsVisible" Value="false"/>
+                </DataTrigger>
+            </Frame.Triggers>
+            <StackLayout>
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{Static resource:Literals.Product}" FontAttributes="Bold"/>
+                            <Span Text=": "/>
+                            <Span Text="{Binding Product.Description}"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{Static resource:Literals.Price}" FontAttributes="Bold"/>
+                            <Span Text=": "/>
+                            <Span Text="{Binding Price, StringFormat='{0:N}'}"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{Static resource:Literals.Total}" FontAttributes="Bold"/>
+                            <Span Text=": "/>
+                            <Span Text="{Binding Total, StringFormat='{0:N}'}"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </StackLayout>
+        </Frame>
+        <Button Text="{Static resource:Literals.Add}"
+                VerticalOptions="EndAndExpand"
+                Command="{Binding AddProductCommand}"/>
+    </StackLayout>
+</ContentPage>

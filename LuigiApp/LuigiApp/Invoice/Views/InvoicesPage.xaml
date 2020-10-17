@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LuigiApp.Invoice.Views.InvoicesPage"
+             Title="{Binding Title}"
+             xmlns:converter="clr-namespace:LuigiApp.Base.Views.Converters"
+             xmlns:client="clr-namespace:LuigiApp.Client.Models" 
+             xmlns:local="clr-namespace:LuigiApp.Invoice.ViewModels" 
+             xmlns:resource="clr-namespace:LuigiApp.Resources"
+             xmlns:model="clr-namespace:LuigiApp.Invoice.Models">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{Static resource:Literals.Add}" Command="{Binding AddInvoiceCommand}" />
+    </ContentPage.ToolbarItems>
+    <!--
+      x:DataType enables compiled bindings for better performance and compile time validation of binding expressions.
+      https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
+    -->
+    <RefreshView x:DataType="local:InvoicesViewModel"
+                 Command="{Binding LoadInvoicesCommand}"
+                 IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <CollectionView ItemsSource="{Binding Invoices}"
+                SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="0,10" x:DataType="model:Invoice">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label LineBreakMode="NoWrap"
+                               Style="{DynamicResource ListItemTextStyle}">
+                            <Label.BindingContext>
+                                <Binding Path="ClientId">
+                                    <Binding.Converter>
+                                        <converter:IdToDescriptionConverter x:TypeArguments="client:Client"/>
+                                    </Binding.Converter>
+                                </Binding>
+                            </Label.BindingContext>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Binding Result.Name}" x:DataType="{x:Null}" FontAttributes="Bold" FontSize="16"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+                        <Label Grid.Row="1"
+                            Padding="5"
+                            LineBreakMode="NoWrap"
+                            Style="{DynamicResource ListItemDetailTextStyle}"
+                            >
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Static resource:Literals.Total}" FontAttributes="Bold"/>
+                                    <Span Text=": "/>
+                                    <Span Text="{Binding Total, StringFormat='{0:N}'}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+                        <Label Grid.Column="1"
+                            HorizontalTextAlignment="End"
+                            Padding="5"
+                            LineBreakMode="NoWrap" 
+                            Style="{DynamicResource ListInvoiceTextStyle}" >
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Static resource:Literals.Date}" FontAttributes="Bold"/>
+                                    <Span Text=": "/>
+                                    <Span Text="{Binding Date, StringFormat='{0:dd/MM/yyyy}'}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+                        <Label Grid.Column="1"
+                            HorizontalTextAlignment="End"
+                            Grid.Row="1"
+                            Padding="5"
+                            LineBreakMode="NoWrap" 
+                            Style="{DynamicResource ListItemTextStyle}" >
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Static resource:Literals.Hour}" FontAttributes="Bold"/>
+                                    <Span Text=": "/>
+                                    <Span Text="{Binding Date, StringFormat='{0:t}'}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+                        <BoxView  BackgroundColor="LightGray"
+                                  Grid.ColumnSpan="2"
+                                  Grid.Row="2"
+                                  HeightRequest="1"
+                                  HorizontalOptions="FillAndExpand"/>
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                NumberOfTapsRequired="1"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:InvoicesViewModel}}, Path=InvoiceTapped}"		
+                                CommandParameter="{Binding .}">
+                            </TapGestureRecognizer>
+                        </Grid.GestureRecognizers>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>

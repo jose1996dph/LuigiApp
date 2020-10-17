@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LuigiApp.Product.Views.ProductsPage"
+             xmlns:model="clr-namespace:LuigiApp.Product.Models"
+             xmlns:local="clr-namespace:LuigiApp.Product.ViewModels"
+             xmlns:resource="clr-namespace:LuigiApp.Resources"
+             Title="{Binding Title}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{Static resource:Literals.Add}" Command="{Binding AddProductCommand}" />
+    </ContentPage.ToolbarItems>
+    <!--
+      x:DataType enables compiled bindings for better performance and compile time validation of binding expressions.
+      https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
+    -->
+    <RefreshView x:DataType="local:ProductsViewModel"
+                 Command="{Binding LoadProductsCommand}"
+                 IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <CollectionView ItemsSource="{Binding Products}"
+                        SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid x:DataType="model:Product">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Text="{Binding Description}"
+                            FontAttributes="Bold"
+                            VerticalTextAlignment="Center"
+                            Style="{DynamicResource ListItemTextStyle}" 
+                            FontSize="16" />
+                        <Label VerticalTextAlignment="Center"
+                               Grid.Row="1"
+                            Style="{DynamicResource ListItemDetailTextStyle}">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Static resource:Literals.Code}" FontAttributes="Bold"/>
+                                    <Span Text=": "/>
+                                    <Span Text="{Binding Code}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        <Label VerticalTextAlignment="Center"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Style="{DynamicResource ListItemDetailTextStyle}">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Static resource:Literals.Price}" FontAttributes="Bold"/>
+                                    <Span Text=": "/>
+                                    <Span Text="{Binding Price, StringFormat='{0:N}'}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        <BoxView  BackgroundColor="LightGray"
+                                  Grid.ColumnSpan="2"
+                                  Grid.Row="2"
+                                  HeightRequest="1"
+                                  HorizontalOptions="FillAndExpand"/>
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                NumberOfTapsRequired="1"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:ProductsViewModel}}, Path=ProductTapped}"		
+                                CommandParameter="{Binding .}">
+                            </TapGestureRecognizer>
+                        </Grid.GestureRecognizers>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>

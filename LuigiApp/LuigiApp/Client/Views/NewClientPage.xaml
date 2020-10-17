@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LuigiApp.Client.Views.NewClientPage"
+             xmlns:local="clr-namespace:LuigiApp.Client.ViewModels"
+             xmlns:model="clr-namespace:LuigiApp.Client.Models"
+             xmlns:resource="clr-namespace:LuigiApp.Resources"
+             Shell.TabBarIsVisible="False"
+             Title="{Binding Title}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem IconImageSource="save.png" Command="{Binding SaveClientCommand}" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout x:DataType="local:NewClientViewModel">
+            <Entry Placeholder="{Static resource:Literals.Dni}"
+                   Keyboard="Numeric"
+                   Text="{Binding Dni}"/>
+            <Entry Placeholder="{Static resource:Literals.Name}"
+                   Text="{Binding Name}"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

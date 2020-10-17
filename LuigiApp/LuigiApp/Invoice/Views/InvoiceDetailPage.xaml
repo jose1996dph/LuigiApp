@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LuigiApp.Invoice.Views.InvoiceDetailPage"
+             xmlns:model="clr-namespace:LuigiApp.Invoice.Models"
+             xmlns:product="clr-namespace:LuigiApp.Product.Models"
+             xmlns:converter="clr-namespace:LuigiApp.Base.Views.Converters"
+             xmlns:local="clr-namespace:LuigiApp.Invoice.ViewModels"
+             xmlns:resource="clr-namespace:LuigiApp.Resources"
+             Shell.TabBarIsVisible="False"
+             Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Frame">
+                <Setter Property="BorderColor" Value="Black"/>
+                <Setter Property="CornerRadius" Value="10"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <StackLayout x:DataType="local:InvoiceDetailViewModel">
+            <Label Text="{Static resource:Literals.Invoirce}"
+                   LineBreakMode="NoWrap"
+                   FontAttributes="Bold"
+                   HorizontalTextAlignment="Center"
+                   Style="{DynamicResource ListItemTextStyle}" 
+                   FontSize="16"/>
+            <Frame Padding="5"
+                   Margin="5">
+                <StackLayout>
+                    <Label>
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Static resource:Literals.Date}" FontAttributes="Bold"/>
+                                <Span Text=": "/>
+                                <Span Text="{Binding Date}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label>
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Static resource:Literals.Total}" FontAttributes="Bold"/>
+                                <Span Text=": "/>
+                                <Span Text="{Binding Total, StringFormat='{0:N}'}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </StackLayout>
+            </Frame>
+            <Label Text="{Static resource:Literals.Client}"
+                   FontAttributes="Bold"
+                   HorizontalTextAlignment="Center"
+                   Style="{DynamicResource ListItemTextStyle}" 
+                   FontSize="16"/>
+            <Frame Padding="5"
+                   Margin="5">
+                <StackLayout>
+                    <Label>
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Static resource:Literals.Dni}" FontAttributes="Bold"/>
+                                <Span Text=": "/>
+                                <Span Text="{Binding Client.Dni}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label>
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Static resource:Literals.Name}" FontAttributes="Bold"/>
+                                <Span Text=": "/>
+                                <Span Text="{Binding Client.Name}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </StackLayout>
+            </Frame>
+            <Label Text="{Static resource:Literals.Products}"
+                   FontAttributes="Bold"
+                   HorizontalTextAlignment="Center"
+                   Style="{DynamicResource ListItemTextStyle}" 
+                   FontSize="16"/>
+            <BoxView BackgroundColor="LightGray"
+                     HeightRequest="1"
+                     HorizontalOptions="FillAndExpand"/>
+            <CollectionView ItemsSource="{Binding InvoiceProducts}"
+                        SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="0,10" x:DataType="model:InvoiceProduct">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{DynamicResource ListItemTextStyle}" 
+                                   FontSize="16">
+                                <Label.BindingContext>
+                                    <Binding Path="ProductId">
+                                        <Binding.Converter>
+                                            <converter:IdToDescriptionConverter x:TypeArguments="product:Product"/>
+                                        </Binding.Converter>
+                                    </Binding>
+                                </Label.BindingContext>
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding Result.Description}" x:DataType="{x:Null}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Label LineBreakMode="NoWrap"
+                                Grid.Row="1"
+                                Style="{DynamicResource ListItemDetailTextStyle}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Static resource:Literals.Price}" FontAttributes="Bold"/>
+                                        <Span Text=": " />
+                                        <Span Text="{Binding Price, StringFormat='{0:N}'}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Label LineBreakMode="NoWrap"
+                                Grid.Column="1"
+                                HorizontalTextAlignment="End"
+                                Style="{DynamicResource ListItemDetailTextStyle}" >
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Static resource:Literals.Quantity}" FontAttributes="Bold"/>
+                                        <Span Text=": " />
+                                        <Span Text="{Binding Quantity}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Label LineBreakMode="NoWrap"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                HorizontalTextAlignment="End"
+                                Style="{DynamicResource ListItemDetailTextStyle}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Static resource:Literals.Total}" FontAttributes="Bold"/>
+                                        <Span Text=": "/>
+                                        <Span Text="{Binding Total, StringFormat='{0:N}'}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+
+                            <BoxView BackgroundColor="LightGray"
+                                 Grid.Row="2"
+                                 Grid.ColumnSpan="2"
+                                 HeightRequest="1"
+                                 HorizontalOptions="FillAndExpand"/>
+
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                    NumberOfTapsRequired="1"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type local:NewInvoiceViewModel}}, Path=InvoiceProductTapped}"		
+                                    CommandParameter="{Binding .}">
+                                </TapGestureRecognizer>
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

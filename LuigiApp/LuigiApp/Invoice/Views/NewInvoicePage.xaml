@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LuigiApp.Invoice.Views.NewInvoicePage"
+             xmlns:local="clr-namespace:LuigiApp.Invoice.ViewModels"
+             xmlns:model="clr-namespace:LuigiApp.Invoice.Models"
+             xmlns:product="clr-namespace:LuigiApp.Product.Models"
+             xmlns:converter="clr-namespace:LuigiApp.Base.Views.Converters"
+             xmlns:resource="clr-namespace:LuigiApp.Resources"
+             Shell.TabBarIsVisible="False"
+             Title="{Binding Title}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem IconImageSource="save.png" Command="{Binding SaveCommand}" />
+    </ContentPage.ToolbarItems>
+    <StackLayout x:DataType="local:NewInvoiceViewModel">
+        <Entry Placeholder="{Static resource:Literals.Dni}"
+               Text="{Binding Dni}"
+               Keyboard="Numeric"/>
+        <Entry Placeholder="{Static resource:Literals.Name}"
+               Text="{Binding Name}"/>
+        <Button Text="{Static resource:Literals.AddProduct}"
+                Command="{Binding AddProductCommand}"/>
+        <CollectionView ItemsSource="{Binding InvoiceProducts}"
+                        SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="0,10" x:DataType="model:InvoiceProduct">
+                        <Grid.Resources>
+                            <ResourceDictionary>
+                                <Style TargetType="Label">
+                                </Style>
+                            </ResourceDictionary>
+                        </Grid.Resources>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label LineBreakMode="NoWrap"
+                               Style="{DynamicResource ListInvoiceTextStyle}" 
+                               FontSize="16">
+                            <Label.BindingContext>
+                                <Binding Path="ProductId">
+                                    <Binding.Converter>
+                                        <converter:IdToDescriptionConverter x:TypeArguments="product:Product"/>
+                                    </Binding.Converter>
+                                </Binding>
+                            </Label.BindingContext>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Binding Result.Description}" x:DataType="{x:Null}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        <Label LineBreakMode="NoWrap"
+                               Grid.Row="1"
+                               Style="{DynamicResource ListInvoiceDetailTextStyle}">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Static resource:Literals.Price}" FontAttributes="Bold"/>
+                                    <Span Text=": " />
+                                    <Span Text="{Binding Price, StringFormat='{0:N}'}" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        <Label LineBreakMode="NoWrap"
+                               Grid.Column="1"
+                               HorizontalTextAlignment="End"
+                               Style="{DynamicResource ListInvoiceDetailTextStyle}">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Static resource:Literals.Quantity}" FontAttributes="Bold"/>
+                                    <Span Text=": " />
+                                    <Span Text="{Binding Quantity}" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        <Label LineBreakMode="NoWrap"
+                               Grid.Row="1"
+                               Grid.Column="1"
+                               HorizontalTextAlignment="End"
+                               Style="{DynamicResource ListInvoiceDetailTextStyle}">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{Static resource:Literals.Total}" FontAttributes="Bold"/>
+                                    <Span Text=": "/>
+                                    <Span Text="{Binding Total, StringFormat='{0:N}'}" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+                        <BoxView BackgroundColor="LightGray"
+                                 Grid.Row="2"
+                                 Grid.ColumnSpan="2"
+                                 HeightRequest="1"
+                                 HorizontalOptions="FillAndExpand"/>
+
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                NumberOfTapsRequired="1"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:NewInvoiceViewModel}}, Path=InvoiceProductTapped}"		
+                                CommandParameter="{Binding .}">
+                            </TapGestureRecognizer>
+                        </Grid.GestureRecognizers>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Label LineBreakMode="NoWrap"
+               Padding="5"
+               Style="{DynamicResource ListInvoiceTextStyle}" 
+               FontSize="18">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="{Static resource:Literals.Total}" FontAttributes="Bold"/>
+                    <Span Text=": "/>
+                    <Span Text="{Binding Total, StringFormat='{0:N}'}" />
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+    </StackLayout>
+</ContentPage>

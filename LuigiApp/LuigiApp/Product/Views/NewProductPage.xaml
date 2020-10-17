@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LuigiApp.Product.Views.NewProductPage"
+             xmlns:local="clr-namespace:LuigiApp.Product.ViewModels"
+             xmlns:resource="clr-namespace:LuigiApp.Resources"
+             xmlns:converter="clr-namespace:LuigiApp.Base.Views.Converters"
+             x:DataType="local:NewProductViewModel"
+             Shell.TabBarIsVisible="False"
+             NavigationPage.HasBackButton="True"
+             Title="{Binding Title}">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding UnsubscribeCommand}"/>
+    </Shell.BackButtonBehavior>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:StringToDoubleConverter x:Key="StringToDouble" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem IconImageSource="save.png" Command="{Binding SaveProductCommand}" />
+    </ContentPage.ToolbarItems>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <Entry Placeholder="{Static resource:Literals.Code}"
+               Keyboard="Plain"
+               Text="{Binding Code}"/>
+        <ImageButton Padding="10"
+                     HeightRequest="50"
+                     WidthRequest="50"
+                     Grid.Column="1"
+                     Source="scan.png"
+                     Command="{Binding ScanProductCommand}"/>
+        <Entry Placeholder="{Static resource:Literals.NameOrDescription}"
+               Keyboard="Text"
+               Text="{Binding Description}"
+               Grid.Row="1"
+               Grid.ColumnSpan="2"/>
+        <Entry Placeholder="{Static resource:Literals.Price}"
+               Keyboard="Numeric"
+               Text="{Binding Price, Mode=TwoWay, Converter={StaticResource StringToDouble}}"
+               Grid.Row="2"
+               Grid.ColumnSpan="2"/>
+    </Grid>
+</ContentPage>
